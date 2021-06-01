@@ -42,6 +42,7 @@ resource "aws_subnet" "PrivateSubnet2" {
   availability_zone = "us-west-2b"
 }
 
+# Configure NatGateway
 resource "aws_nat_gateway" "NatGW" {
   allocation_id = aws_eip.eip.id
   subnet_id     = aws_subnet.PublicSubnet1.id
