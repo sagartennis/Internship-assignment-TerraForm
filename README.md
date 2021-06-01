@@ -35,7 +35,7 @@ The Internet gateway is the medium where the cloud interacts with the internet
 ## NAT Gateway ##
 
 The NAT gateway provides outbound internet access to private subnet. It also transalates public traffic to private. It resides inside 
-# the publi subnet. Since only one of the private subnet requires internet access, I have created only one NAT gateway
+the publi subnet. Since only one of the private subnet requires internet access, I have created only one NAT gateway
 
 ## Public routeTable ##
 This route table will have a default rule o allow all outbound traffic routed to the internet gateway.
