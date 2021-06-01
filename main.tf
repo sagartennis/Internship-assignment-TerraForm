@@ -43,6 +43,8 @@ resource "aws_subnet" "PrivateSubnet2" {
 }
 
 # Configure NatGateway
+# The NAT gateway provides outbound internet access to private subnet. It also transalates public traffic to private. It resides inside 
+# the publi subnet. Since only one of the private subnet requires internet access, I have created only one NAT gateway  
 resource "aws_nat_gateway" "NatGW" {
   allocation_id = aws_eip.eip.id
   subnet_id     = aws_subnet.PublicSubnet1.id
@@ -52,11 +54,11 @@ resource "aws_eip" "eip" {
   
   vpc      = true
 }
-
+# This route table will have a default rule o allow all outbound traffic routed to the internet gateway.
 resource "aws_route_table" "PublicRouteTable" {
   vpc_id = aws_vpc.Main.id
 }
-
+#In order to associate subnets with our route table, we will need to use a SubnetRouteTableAssociation.
 resource "aws_route_table_association" "PublicRouteTableAssociation1" {
   subnet_id      = aws_subnet.PublicSubnet1.id
   route_table_id = aws_route_table.PublicRouteTable.id
@@ -92,7 +94,7 @@ resource "aws_route" "PrivateRoute" {
   destination_cidr_block    = "0.0.0.0/0"
   nat_gateway_id            =  aws_nat_gateway.NatGW.id
 }
-
+# A security group acts as a virtual firewall for your EC2 instances to control incoming and outgoing traffic
 resource "aws_security_group" "PublicSecGroup" {
   name        = "PublicSecGroup"
   description = "Allow TLS inbound traffic"
@@ -156,7 +158,7 @@ resource "aws_security_group" "LBGroup" {
   }
 
 }
-
+# A EC2 Instane created
 resource "aws_instance" "EC2Public" {
   ami           = "ami-0cf6f5c8a62fa5da6"
   instance_type = "t2.micro"
@@ -175,7 +177,7 @@ resource "aws_ebs_volume" "volume" {
   availability_zone = "us-west-2a"
   size              = 10
 }
-
+# A EC2 Instane created
 resource "aws_instance" "EC2Private" {
   ami           = "ami-0cf6f5c8a62fa5da6"
   instance_type = "t2.micro"
